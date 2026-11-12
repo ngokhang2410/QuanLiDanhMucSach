@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ "Sửa sách" if book else "Thêm sách" }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-7">
+    <h1 class="h3 mb-3">{{ "Sửa sách" if book else "Thêm sách" }}</h1>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label" for="title">Tiêu đề</label>
+            <input class="form-control" id="title" name="title" required maxlength="200"
+                   value="{{ book.title if book else '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="author">Tác giả</label>
+            <input class="form-control" id="author" name="author" required maxlength="100"
+                   value="{{ book.author if book else '' }}">
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label" for="year">Năm XB</label>
+              <input class="form-control" id="year" name="year" type="number"
+                     min="1900" max="2100"
+                     value="{{ book.year if book else 2024 }}">
+            </div>
+            <div class="col-md-8">
+              <label class="form-label" for="category_id">Danh mục</label>
+              <select class="form-select" id="category_id" name="category_id" required>
+                <option value="">— Chọn danh mục —</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}"
+                  {% if book and book.category_id == cat.id %}selected{% endif %}>
+                  {{ cat.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="available" name="available"
+                   {% if not book or book.available %}checked{% endif %}>
+            <label class="form-check-label" for="available">Còn hàng</label>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">
+              {{ "Cập nhật" if book else "Thêm" }}
+            </button>
+            <a href="{{ url_for('books_list') }}" class="btn btn-outline-secondary">Hủy</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

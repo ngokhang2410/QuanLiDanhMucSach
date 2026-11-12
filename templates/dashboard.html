@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Quản lý sách{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Dashboard</h1>
+    <p class="text-muted mb-0">Tổng quan danh mục và sách (SQLite)</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('seed') }}" class="btn btn-outline-secondary btn-sm">Nạp dữ liệu mẫu</a>
+    <a href="{{ url_for('categories_create') }}" class="btn btn-outline-success btn-sm">Thêm danh mục</a>
+    <a href="{{ url_for('books_create') }}" class="btn btn-success btn-sm">Thêm sách</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Danh mục</div>
+        <div class="fs-3 fw-semibold">{{ total_categories }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Tổng sách</div>
+        <div class="fs-3 fw-semibold">{{ total_books }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Còn hàng</div>
+        <div class="fs-3 fw-semibold text-success">{{ available_books }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Hết hàng</div>
+        <div class="fs-3 fw-semibold text-danger">{{ unavailable_books }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <span class="fw-semibold">Danh mục &amp; số sách</span>
+    <a href="{{ url_for('categories_list') }}" class="small">Quản lý danh mục</a>
+  </div>
+  <div class="card-body p-0">
+    {% if category_stats %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Danh mục</th>
+            <th>Mô tả</th>
+            <th class="text-end">Số sách</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in category_stats %}
+          <tr>
+            <td class="fw-medium">{{ row.category.name }}</td>
+            <td class="text-muted">{{ row.category.description or "—" }}</td>
+            <td class="text-end">{{ row.book_count }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary"
+                 href="{{ url_for('books_list', category_id=row.category.id) }}">
+                Xem sách
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-muted p-3 mb-0">
+      Chưa có danh mục.
+      <a href="{{ url_for('seed') }}">Nạp dữ liệu mẫu</a>
+      hoặc
+      <a href="{{ url_for('categories_create') }}">thêm danh mục</a>.
+    </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
